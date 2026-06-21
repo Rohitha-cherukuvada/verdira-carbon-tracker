@@ -74,7 +74,7 @@ export const Insights: React.FC<InsightsProps> = ({ logs }) => {
   };
 
   return (
-    <div className="insights-card glass-panel">
+    <div className="insights-card glass-panel" role="region" aria-label="Personalized coaching insights">
       <div className="card-header">
         <div>
           <h3 className="card-title">Personalized Insights</h3>
@@ -84,14 +84,19 @@ export const Insights: React.FC<InsightsProps> = ({ logs }) => {
           onClick={fetchInsights} 
           disabled={loading || logs.length === 0}
           className="refresh-insights-btn"
+          aria-label="Refresh carbon coaching tips"
         >
           {loading ? 'Analyzing...' : 'Refresh Tips'}
         </button>
       </div>
 
-      {logs.length === 0 ? (
-        <div className="insights-empty">
-          <p>Please log daily snapshots so the engine can scan your patterns.</p>
+      <div aria-live="polite" role="status" className="insights-status-region">
+        {logs.length === 0 ? (
+        <div className="insights-empty" style={{ padding: '2rem 1rem', textAlign: 'center', opacity: 0.7, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: '1.5rem', display: 'block', marginBottom: '0.5rem' }} aria-hidden="true">🔒</span>
+          <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+            Log an entry to get your first insight
+          </p>
         </div>
       ) : loading ? (
         <div className="insights-loading">
@@ -109,7 +114,7 @@ export const Insights: React.FC<InsightsProps> = ({ logs }) => {
             <div key={idx} className="tip-item-card">
               <div className="tip-meta">
                 <span className="tip-category">
-                  <span className="tip-icon">{getCategoryIcon(t.category)}</span>
+                  <span className="tip-icon" aria-hidden="true">{getCategoryIcon(t.category)}</span>
                   {t.category.toUpperCase()}
                 </span>
                 <span className={`impact-badge ${getImpactClass(t.impact)}`}>
@@ -126,6 +131,7 @@ export const Insights: React.FC<InsightsProps> = ({ logs }) => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

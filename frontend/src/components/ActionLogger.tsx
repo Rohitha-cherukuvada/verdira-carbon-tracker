@@ -87,6 +87,7 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
           max={todayStr}
           onChange={(e) => setSelectedDate(e.target.value)}
           className="date-picker-input"
+          aria-label="Log date selector"
         />
       </div>
 
@@ -111,8 +112,10 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
                 type="button"
                 className={`toggle-chip ${transportType === item.id ? 'active' : ''}`}
                 onClick={() => setTransportType(item.id as DailyLog['transportType'])}
+                aria-pressed={transportType === item.id}
+                aria-label={`${item.label} transport choice`}
               >
-                <span className="chip-icon">{item.icon}</span>
+                <span className="chip-icon" aria-hidden="true">{item.icon}</span>
                 {item.label}
               </button>
             ))}
@@ -121,16 +124,21 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
           {transportType !== 'none' && (
             <div className="slider-container">
               <div className="slider-labels">
-                <span>Distance Traveled:</span>
+                <label htmlFor="transport-distance-slider">Distance Traveled:</label>
                 <span className="slider-value">{transportDistance} km</span>
               </div>
               <input
+                id="transport-distance-slider"
                 type="range"
                 min="0"
                 max="100"
                 value={transportDistance}
                 onChange={(e) => setTransportDistance(Number(e.target.value))}
                 className="custom-range-slider"
+                aria-valuenow={transportDistance}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuetext={`${transportDistance} kilometers`}
               />
               <div className="range-hints">
                 <span>0 km</span>
@@ -160,6 +168,8 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
                 type="button"
                 className={`toggle-chip ${mealType === item.id ? 'active' : ''}`}
                 onClick={() => setMealType(item.id as DailyLog['mealType'])}
+                aria-pressed={mealType === item.id}
+                aria-label={`${item.label} meal diet choice`}
               >
                 {item.label}
               </button>
@@ -175,6 +185,8 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
               type="button"
               className={`boolean-toggle-btn ${foodWaste ? 'true-active' : ''}`}
               onClick={() => setFoodWaste(!foodWaste)}
+              aria-pressed={foodWaste}
+              aria-label="Food waste toggle, active if you threw away leftovers"
             >
               {foodWaste ? 'Yes, Wasted' : 'No Waste'}
             </button>
@@ -198,6 +210,8 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
                 type="button"
                 className={`boolean-toggle-btn ${solarEnergy ? 'green-active' : ''}`}
                 onClick={() => setSolarEnergy(!solarEnergy)}
+                aria-pressed={solarEnergy}
+                aria-label="Solar energy tariff status"
               >
                 {solarEnergy ? 'Active' : 'Off'}
               </button>
@@ -212,6 +226,8 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
                 type="button"
                 className={`boolean-toggle-btn ${energyEcoMode ? 'green-active' : ''}`}
                 onClick={() => setEnergyEcoMode(!energyEcoMode)}
+                aria-pressed={energyEcoMode}
+                aria-label="Eco thermostat or energy savings status"
               >
                 {energyEcoMode ? 'Active' : 'Off'}
               </button>
@@ -238,8 +254,10 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
                 type="button"
                 className={`toggle-chip ${consumption === item.id ? 'active' : ''}`}
                 onClick={() => setConsumption(item.id as DailyLog['consumption'])}
+                aria-pressed={consumption === item.id}
+                aria-label={`${item.label} purchase choice`}
               >
-                <span className="chip-icon">{item.icon}</span>
+                <span className="chip-icon" aria-hidden="true">{item.icon}</span>
                 {item.label}
               </button>
             ))}
@@ -256,19 +274,25 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
           <div className="toggle-grid">
             <button
               type="button"
+              role="checkbox"
+              aria-checked={wasteRecycled}
               className={`checkbox-chip ${wasteRecycled ? 'checked' : ''}`}
               onClick={() => setWasteRecycled(!wasteRecycled)}
+              aria-label="Recycled plastic, paper, and glass"
             >
-              <span className="checkbox-icon">{wasteRecycled ? '✓' : '+'}</span>
+              <span className="checkbox-icon" aria-hidden="true">{wasteRecycled ? '✓' : '+'}</span>
               Recycled Plastic/Paper/Glass
             </button>
 
             <button
               type="button"
+              role="checkbox"
+              aria-checked={wasteComposted}
               className={`checkbox-chip ${wasteComposted ? 'checked' : ''}`}
               onClick={() => setWasteComposted(!wasteComposted)}
+              aria-label="Composted organic waste"
             >
-              <span className="checkbox-icon">{wasteComposted ? '✓' : '+'}</span>
+              <span className="checkbox-icon" aria-hidden="true">{wasteComposted ? '✓' : '+'}</span>
               Composted Organic waste
             </button>
           </div>
@@ -277,7 +301,7 @@ export const ActionLogger: React.FC<ActionLoggerProps> = ({ onLogSaved, existing
         {/* Form Action */}
         <div className="form-actions-row">
           {notification && (
-            <div className="success-banner">{notification}</div>
+            <div className="success-banner" role="status" aria-live="polite">{notification}</div>
           )}
           <button type="submit" className="submit-log-btn">
             Save Snapshot

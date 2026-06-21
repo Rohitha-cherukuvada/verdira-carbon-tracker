@@ -2,7 +2,7 @@ import { calculateDailyFootprint } from './calculations';
 import type { DailyLog } from './calculations';
 
 // 14 Days of Seed Data showing a realistic positive journey
-const SEED_DATA: DailyLog[] = [
+export const SEED_DATA: DailyLog[] = [
   {
     date: getPastDateString(14),
     transportType: 'gas_vehicle',
@@ -184,9 +184,7 @@ const STORAGE_KEY = 'verdira_daily_logs';
 export function getLogs(): DailyLog[] {
   const data = localStorage.getItem(STORAGE_KEY);
   if (!data) {
-    // Save and load seed data initially
-    saveLogs(SEED_DATA);
-    return SEED_DATA;
+    return [];
   }
   try {
     const parsed = JSON.parse(data);
@@ -197,7 +195,7 @@ export function getLogs(): DailyLog[] {
   } catch (e) {
     console.error('Error parsing storage logs:', e);
   }
-  return SEED_DATA;
+  return [];
 }
 
 export function saveLogs(logs: DailyLog[]): void {

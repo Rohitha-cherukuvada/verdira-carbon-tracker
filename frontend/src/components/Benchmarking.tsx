@@ -68,15 +68,25 @@ export const Benchmarking: React.FC<BenchmarkingProps> = ({ logs }) => {
 
   if (logs.length === 0) {
     return (
-      <div className="benchmarking-card glass-panel empty-state">
-        <h3>Comparative Context</h3>
-        <p>Log snapshots to unlock benchmarking comparisons.</p>
+      <div className="benchmarking-card glass-panel benchmarking-disabled">
+        <div className="card-header">
+          <div>
+            <h3 className="card-title">Comparative Context</h3>
+            <p className="card-subtitle-note">Opt-in anonymous benchmarking</p>
+          </div>
+        </div>
+        <div className="benchmarking-empty" style={{ padding: '2rem 1rem', textAlign: 'center', opacity: 0.7, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: '1.5rem', display: 'block', marginBottom: '0.5rem' }} aria-hidden="true">⚖️</span>
+          <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+            Log snapshots to unlock benchmarking comparisons
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="benchmarking-card glass-panel">
+    <div className="benchmarking-card glass-panel" role="region" aria-label="Comparative carbon footprint benchmarks">
       <div className="card-header">
         <div>
           <h3 className="card-title">Comparative Context</h3>
@@ -84,7 +94,8 @@ export const Benchmarking: React.FC<BenchmarkingProps> = ({ logs }) => {
         </div>
       </div>
 
-      {loading && !data ? (
+      <div aria-live="polite" role="status" className="benchmark-status-region">
+        {loading && !data ? (
         <div className="benchmark-loading">
           <div className="spinner"></div>
           <p>Comparing habits against global averages...</p>
@@ -158,9 +169,14 @@ export const Benchmarking: React.FC<BenchmarkingProps> = ({ logs }) => {
                   style={{ 
                     left: `${Math.min(96, Math.max(2, (data.avgFootprint / 50) * 100))}%` 
                   }}
+                  role="meter"
+                  aria-valuenow={data.avgFootprint}
+                  aria-valuemin={0}
+                  aria-valuemax={50}
+                  aria-label={`Your average carbon output is ${data.avgFootprint.toFixed(1)} kilograms of CO2 per day.`}
                 >
                   <div className="indicator-badge">You ({data.avgFootprint.toFixed(1)})</div>
-                  <div className="indicator-pin" />
+                  <div className="indicator-pin" aria-hidden="true" />
                 </div>
               </div>
 
@@ -195,6 +211,7 @@ export const Benchmarking: React.FC<BenchmarkingProps> = ({ logs }) => {
 
         </div>
       ) : null}
+      </div>
     </div>
   );
 };

@@ -619,14 +619,21 @@ body {
   transition: opacity 0.15s ease;
 }
 
-.chart-point-group:hover .point-tooltip {
+.chart-point-group:hover .point-tooltip,
+.chart-point-group:focus-within .point-tooltip {
   opacity: 1;
 }
 
-.chart-point-group:hover circle:first-of-type {
+.chart-point-group:hover circle:first-of-type,
+.chart-point-group:focus-within circle:first-of-type {
   r: 6.5;
   fill: var(--accent-teal);
   stroke: #ffffff;
+}
+
+.chart-point-group:focus-visible {
+  outline: 2px solid var(--accent-teal);
+  outline-offset: 2px;
 }
 
 /* Category progress listing */

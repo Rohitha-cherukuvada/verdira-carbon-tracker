@@ -41,7 +41,7 @@ function App() {
       <header className="app-header">
         <div className="brand-section">
           {/* Custom inline leaf SVG logo */}
-          <svg className="brand-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg className="brand-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M12 3C7.5 3 3.5 6.5 3 11C2.5 15.5 5.5 19.5 10 20.5V22H14V20.5C18.5 19.5 21.5 15.5 21 11C20.5 6.5 16.5 3 12 3Z" stroke="#1B3B2B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M12 3V20" stroke="#0D9488" strokeWidth="2" strokeLinecap="round"/>
             <path d="M12 9C14.5 9 17 10 18.5 12" stroke="#10B981" strokeWidth="2" strokeLinecap="round"/>
@@ -54,7 +54,7 @@ function App() {
         </div>
 
         {/* Sync Status Badge */}
-        <div className="connection-status">
+        <div className="connection-status" role="status" aria-live="polite">
           <div className="status-dot"></div>
           <span className="status-label">Local Snapshot Active</span>
         </div>
@@ -65,7 +65,7 @@ function App() {
         {/* Left Column: Avatar & Gamification */}
         <div className="grid-left-col">
           {/* Earth Twin Avatar */}
-          <EarthTwin avgFootprint={avgFootprint} />
+          <EarthTwin avgFootprint={avgFootprint} hasLogs={logs.length > 0} />
 
           {/* Gamified Streaks */}
           <Streaks logs={logs} />

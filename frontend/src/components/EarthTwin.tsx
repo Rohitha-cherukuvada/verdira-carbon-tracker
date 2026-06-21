@@ -3,14 +3,15 @@ import { getHealthScore, getTreeStage } from '../utils/calculations';
 
 interface EarthTwinProps {
   avgFootprint: number;
+  hasLogs: boolean;
 }
 
-export const EarthTwin: React.FC<EarthTwinProps> = ({ avgFootprint }) => {
+export const EarthTwin: React.FC<EarthTwinProps> = ({ avgFootprint, hasLogs }) => {
   const [rustle, setRustle] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const health = getHealthScore(avgFootprint);
-  const stage = getTreeStage(health);
+  const health = hasLogs ? getHealthScore(avgFootprint) : 50;
+  const stage = hasLogs ? getTreeStage(health) : 'sapling';
 
   // Quotes from the Earth Twin depending on health
   const healthyQuotes = [
@@ -37,13 +38,21 @@ export const EarthTwin: React.FC<EarthTwinProps> = ({ avgFootprint }) => {
     "Help me grow greener! 🌳"
   ];
 
+  const welcomeQuotes = [
+    "Hi! Log your first day to help me grow! 🌱",
+    "I'm ready to sprout. Let's make eco-conscious choices together!",
+    "Every daily snapshot you log will feed my vitality. 🌎",
+    "Let's bring our Earth Twin to life! 🌿"
+  ];
+
   const handleTreeClick = () => {
     if (rustle) return;
     setRustle(true);
     
     // Choose quote
     let pool = healthyQuotes;
-    if (health < 40) pool = stressedQuotes;
+    if (!hasLogs) pool = welcomeQuotes;
+    else if (health < 40) pool = stressedQuotes;
     else if (health < 75) pool = neutralQuotes;
     
     const randomQuote = pool[Math.floor(Math.random() * pool.length)];
@@ -68,7 +77,15 @@ export const EarthTwin: React.FC<EarthTwinProps> = ({ avgFootprint }) => {
   let statusText = 'Vibrant & Blooming';
   let statusClass = 'status-excellent';
 
-  if (health < 40) {
+  if (!hasLogs) {
+    glowColor = 'rgba(13, 148, 136, 0.15)';
+    glowAccent = 'rgba(16, 185, 129, 0.25)';
+    treeColor = '#34D399';
+    leafAccent = '#10B981';
+    trunkColor = '#5C4033';
+    statusText = 'Sprouting Seedling';
+    statusClass = 'status-good';
+  } else if (health < 40) {
     // Critical / Stressed
     glowColor = 'rgba(239, 68, 68, 0.15)'; // Red
     glowAccent = 'rgba(75, 85, 99, 0.3)'; // Charcoal
@@ -215,7 +232,7 @@ export const EarthTwin: React.FC<EarthTwinProps> = ({ avgFootprint }) => {
 
       <div className="avatar-canvas-container">
         {/* Bubble Speech Message */}
-        <div className={`speech-bubble ${message ? 'visible' : ''}`}>
+        <div className={`speech-bubble ${message ? 'visible' : ''}`} role="status" aria-live="polite">
           {message}
         </div>
 
@@ -223,6 +240,15 @@ export const EarthTwin: React.FC<EarthTwinProps> = ({ avgFootprint }) => {
           viewBox="0 0 200 200" 
           className={`earth-twin-svg ${rustle ? 'rustle-anim' : ''}`}
           onClick={handleTreeClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleTreeClick();
+            }
+          }}
+          aria-label={`Earth Twin Avatar Tree. Click to rustle leaves and listen to thoughts. Current health is ${health} percent, growth stage is ${stage}.`}
         >
           <defs>
             {/* Custom filters for glowing radial background */}
@@ -267,7 +293,7 @@ export const EarthTwin: React.FC<EarthTwinProps> = ({ avgFootprint }) => {
         </div>
       </div>
 
-      <div className="health-bar-container">
+      <div className="health-bar-container" role="status" aria-live="polite">
         <div className="health-bar-label">
           <span>Earth Twin Vitality</span>
           <span className="health-value">{health}%</span>

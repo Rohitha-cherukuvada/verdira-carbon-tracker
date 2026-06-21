@@ -12,9 +12,30 @@ export const Dashboard: React.FC<DashboardProps> = ({ logs }) => {
   // If no logs, return early
   if (logs.length === 0) {
     return (
-      <div className="dashboard-card glass-panel empty-state">
-        <h3>Footprint Breakdown</h3>
-        <p>Log your first day to populate the carbon dashboard!</p>
+      <div className="dashboard-card glass-panel empty-state-dashboard">
+        <div className="card-header">
+          <h3 className="card-title">Footprint Dashboard</h3>
+        </div>
+        <div className="metrics-grid">
+          <div className="metric-box">
+            <span className="metric-label">Average Carbon Output</span>
+            <span className="metric-value">— <span className="unit">kg CO2</span></span>
+          </div>
+          <div className="metric-box">
+            <span className="metric-label">Sustainable Threshold</span>
+            <span className="metric-value status-excellent">8.0 <span className="unit">kg CO2</span></span>
+          </div>
+          <div className="metric-box">
+            <span className="metric-label">Total for Period</span>
+            <span className="metric-value">— <span className="unit">kg CO2</span></span>
+          </div>
+        </div>
+        <div className="empty-chart-placeholder" style={{ padding: '2rem 1rem', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.3)', borderRadius: '1rem', border: '1px dashed rgba(46, 51, 49, 0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }} aria-hidden="true">📊</span>
+          <p style={{ margin: 0, fontWeight: 500, color: 'var(--text-secondary)' }}>
+            Log your first day to bring your Earth Twin to life
+          </p>
+        </div>
       </div>
     );
   }
@@ -125,6 +146,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ logs }) => {
             type="button" 
             className={`filter-btn ${filterDays === 7 ? 'active' : ''}`}
             onClick={() => setFilterDays(7)}
+            aria-pressed={filterDays === 7}
+            aria-label="Filter trends to last 7 days"
           >
             7 Days
           </button>
@@ -132,6 +155,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ logs }) => {
             type="button" 
             className={`filter-btn ${filterDays === 14 ? 'active' : ''}`}
             onClick={() => setFilterDays(14)}
+            aria-pressed={filterDays === 14}
+            aria-label="Filter trends to last 14 days"
           >
             14 Days
           </button>
@@ -158,7 +183,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ logs }) => {
         <h4 className="chart-subtitle">Daily Output Trend (kg CO2)</h4>
         
         <div className="svg-container">
-          <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="trend-svg">
+          <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="trend-svg" role="img" aria-label={`Carbon output trend line chart for the last ${filterDays} days.`}>
             <defs>
               <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#0D9488" stopOpacity="0.3" />
@@ -184,7 +209,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ logs }) => {
                     x={paddingLeft - 8} 
                     y={y + 4} 
                     fontSize="10" 
-                    fill="#9CA3AF" 
+                    fill="#6B7280" 
                     textAnchor="end"
                   >
                     {val.toFixed(0)}
@@ -215,7 +240,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ logs }) => {
               const x = getX(idx);
               const y = getY(item.total);
               return (
-                <g key={idx} className="chart-point-group">
+                <g 
+                  key={idx} 
+                  className="chart-point-group" 
+                  tabIndex={0} 
+                  role="button" 
+                  aria-label={`Data point day ${idx + 1}: ${item.total.toFixed(1)} kg CO2 output`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                    }
+                  }}
+                >
                   <circle 
                     cx={x} 
                     cy={y} 
@@ -271,7 +307,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ logs }) => {
                   x={x} 
                   y={y} 
                   fontSize="10" 
-                  fill="#9CA3AF" 
+                  fill="#6B7280" 
                   textAnchor="middle"
                 >
                   {formatDateLabel(log.date)}
@@ -307,7 +343,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ logs }) => {
                     <span className="cat-progress-pct">{pct}%</span>
                   </div>
                 </div>
-                <div className="progress-track">
+                <div className="progress-track" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${cat.name} output percentage`}>
                   <div 
                     className="progress-fill" 
                     style={{ 
